@@ -1,0 +1,33 @@
+# Build Directory
+build/
+bin/
+lib/
+
+# CMake & Ninja
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+Makefile
+build.ninja
+rules.ninja
+.ninja_deps
+.ninja_log
+compile_commands.json
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Generated
+.DS_Store
+Thumbs.db
+
+
+# Documentation
+tools.md
+.cache
+optimisation.md
+Roadmap.md

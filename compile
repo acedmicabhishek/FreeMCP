@@ -1,0 +1,32 @@
+#!/bin/bash
+
+BUILD_DIR="build"
+EXECUTABLE="./FreeMCP"
+
+mkdir -p $BUILD_DIR
+cd $BUILD_DIR
+
+if [ ! -f "build.ninja" ] && [ -f "CMakeCache.txt" ]; then
+    echo "Generator change detected. Cleaning build directory..."
+    rm -rf *
+fi
+
+if [ ! -f "build.ninja" ]; then
+    echo "Configuring project with Ninja..."
+    cmake -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+fi
+
+echo "Compiling FreeMCP..."
+ninja
+
+if [ $? -eq 0 ]; then
+    echo "Build successful! Launching FreeMCP..."
+    if [ $# -eq 0 ]; then
+        $EXECUTABLE --store
+    else
+        $EXECUTABLE "$@"
+    fi
+else
+    echo "Build failed!"
+    exit 1
+fi
