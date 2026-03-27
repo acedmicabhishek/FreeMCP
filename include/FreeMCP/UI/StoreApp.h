@@ -15,6 +15,7 @@ struct StoreApp {
     std::string active_model;
 };
 
+
 extern StoreApp* global_app;
 
 #ifdef __cplusplus

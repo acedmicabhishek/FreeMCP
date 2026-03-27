@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FreeMCP Remote</string>
+    <string name="ip_hint">Laptop IP Address</string>
+    <string name="prompt_hint">Enter Command/Prompt</string>
+    <string name="send_button">Send to Laptop</string>
+    <string name="status_label">Response Status:</string>
+</resources>

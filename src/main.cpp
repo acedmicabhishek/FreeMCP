@@ -1,9 +1,12 @@
+#include "FreeMCP/Core/NetListener.h"
 #include <iostream>
 #include <string>
 
 void launch_store(int argc, char* argv[]);
 
 int main(int argc, char* argv[]) {
+    FreeMCP::Core::NetListener::start(9000);
+    
     if (argc > 1 && std::string(argv[1]) == "--store") {
         std::cout << "Launching FreeMCP Store..." << std::endl;
         launch_store(argc, argv);

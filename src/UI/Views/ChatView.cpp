@@ -1,6 +1,9 @@
 #include "FreeMCP/UI/Views/ChatView.h"
-#include "FreeMCP/Ollama.h"
+#include "FreeMCP/Core/ChatEngine.h"
 #include <cstring>
+#include <array>
+#include <memory>
+#include <thread>
 
 namespace FreeMCP::UI::Views {
 
@@ -17,6 +20,32 @@ void append_to_chat(StoreApp* app_data, const char* sender, const char* message)
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(app_data->chat_history), mark, 0.0, TRUE, 0.0, 1.0);
 }
 
+
+static std::string exec_cmd(const std::string& cmd) {
+    std::string output;
+    std::array<char, 512> buffer;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
+    if (pipe) {
+        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
+            output += buffer.data();
+    }
+    while (!output.empty() && (output.back() == '\n' || output.back() == ' '))
+        output.pop_back();
+    return output.empty() ? "[Done]" : output;
+}
+
+struct ChatResultData {
+    StoreApp* app;
+    std::string response;
+};
+
+static gboolean on_chat_response(gpointer user_data) {
+    ChatResultData* data = (ChatResultData*)user_data;
+    append_to_chat(data->app, "System", data->response.c_str());
+    delete data;
+    return FALSE;
+}
+
 static void on_chat_send(GtkButton* btn, gpointer user_data) {
     StoreApp* app_data = (StoreApp*)user_data;
     const char* entry_text = gtk_entry_get_text(GTK_ENTRY(app_data->chat_entry));
@@ -25,9 +54,16 @@ static void on_chat_send(GtkButton* btn, gpointer user_data) {
         append_to_chat(app_data, "You", prompt.c_str());
         gtk_entry_set_text(GTK_ENTRY(app_data->chat_entry), "");
         
-        log_message(("Sending prompt to " + app_data->active_model).c_str());
-        std::string response = Ollama::chat(app_data->active_model, prompt);
-        append_to_chat(app_data, "AI", response.c_str());
+        
+        log_message(("AUTO AI: " + prompt).c_str());
+        append_to_chat(app_data, "System", "Thinking...");
+        
+        std::string model = app_data->active_model;
+        std::thread([app_data, model, prompt]() {
+            std::string response = FreeMCP::Core::ChatEngine::chat_auto(model, prompt);
+            ChatResultData* data = new ChatResultData{app_data, response};
+            g_idle_add(on_chat_response, data);
+        }).detach();
     }
 }
 
@@ -40,15 +76,22 @@ GtkWidget* create_chat_view(StoreApp* app_data) {
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(app_data->chat_history), GTK_WRAP_WORD_CHAR);
     gtk_container_add(GTK_CONTAINER(scroll), app_data->chat_history);
     gtk_box_pack_start(GTK_BOX(vbox), scroll, TRUE, TRUE, 0);
-    GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    
+    
+    GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+    
     app_data->chat_entry = gtk_entry_new();
-    GtkWidget* btn = gtk_button_new_with_label("Send");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(app_data->chat_entry), "Ask or command...");
+    GtkWidget* send_btn = gtk_button_new_with_label("Send");
+    
     gtk_box_pack_start(GTK_BOX(hbox), app_data->chat_entry, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), btn, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), send_btn, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-    g_signal_connect(btn, "clicked", G_CALLBACK(on_chat_send), app_data);
+    
+    g_signal_connect(send_btn, "clicked", G_CALLBACK(on_chat_send), app_data);
     g_signal_connect(app_data->chat_entry, "activate", G_CALLBACK(on_chat_send), app_data);
     return vbox;
 }
+
 
 }

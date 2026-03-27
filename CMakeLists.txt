@@ -26,13 +26,16 @@ pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 set(SOURCES
     src/main.cpp
     src/persona.cpp
-    src/memory.cpp
     src/Core/SystemDiscovery.cpp
     src/Core/OllamaClient.cpp
     src/Core/ToolExecutor.cpp
     src/Core/PromptBuilder.cpp
     src/Core/ChatEngine.cpp
+    src/Core/SystemShell.cpp
     src/Core/Utils.cpp
+    src/Core/NetListener.cpp
+    src/Core/ConfigManager.cpp
+    src/Core/IntentClassifier.cpp
     src/UI/StoreApp.cpp
     src/UI/StoreMainWindow.cpp
     src/UI/Views/HomeView.cpp
@@ -48,8 +51,30 @@ add_executable(FreeMCP ${SOURCES})
 # Include directories
 target_include_directories(FreeMCP PRIVATE include ${GTK3_INCLUDE_DIRS})
 
-# Link libraries
-target_link_libraries(FreeMCP PRIVATE ${GTK3_LIBRARIES})
+# Link libraries — all modules
+target_link_libraries(FreeMCP PRIVATE
+    ${GTK3_LIBRARIES}
+    browser
+    system_mod
+    files_mod
+    network_mod
+    audio_mod
+    display_mod
+    clipboard_mod
+    notify_mod
+    power_mod
+    mouse_mod
+)
 
 # Subdirectories for modules
 add_subdirectory(Module/archcore)
+add_subdirectory(Module/browser)
+add_subdirectory(Module/system)
+add_subdirectory(Module/files)
+add_subdirectory(Module/network)
+add_subdirectory(Module/audio)
+add_subdirectory(Module/display)
+add_subdirectory(Module/clipboard)
+add_subdirectory(Module/notify)
+add_subdirectory(Module/power)
+add_subdirectory(Module/mouse)

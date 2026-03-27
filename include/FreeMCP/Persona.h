@@ -11,12 +11,8 @@ namespace Persona {
     };
 
     enum class Character {
-        LIGHT,
         ACE,
-        JARVIS,
-        FRIDAY,
-        PARTNER,
-        COOL_FRIEND
+        LIGHT
     };
 
     struct Identity {

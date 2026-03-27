@@ -2,6 +2,8 @@
 build/
 bin/
 lib/
+out/
+dist/
 
 # CMake & Ninja
 CMakeCache.txt
@@ -20,14 +22,56 @@ compile_commands.json
 .idea/
 *.swp
 *.swo
+*.iml
+*.iws
 
 # OS Generated
 .DS_Store
 Thumbs.db
+*.log
+*.bak
+*.tmp
+*.temp
 
-
-# Documentation
+# Documentation & Cache
 tools.md
-.cache
+.cache/
 optimisation.md
 Roadmap.md
+
+# Python
+__pycache__/
+*.pyc
+
+# Android
+**/.gradle/
+**/build/
+**/.cxx/
+**/local.properties
+**/.externalNativeBuild/
+captures/
+output.json
+*.apk
+*.aar
+*.jks
+*.keystore
+google-services.json
+*.ap_
+*.dex
+*.class
+
+
+# Binaries & Shared Libraries
+*.exe
+*.dll
+*.so
+*.o
+*.a
+
+# Local Binary & Logs
+/tmp/ollama_payload.json
+build_log.txt
+*.log
+*.sh.log
+
+robustplan.md

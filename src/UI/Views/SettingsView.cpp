@@ -36,10 +36,6 @@ static void on_character_changed(GtkComboBoxText* combo, gpointer user_data) {
     
     if (character == "Light") Persona::set_character(Persona::Character::LIGHT);
     else if (character == "Ace") Persona::set_character(Persona::Character::ACE);
-    else if (character == "Jarvis") Persona::set_character(Persona::Character::JARVIS);
-    else if (character == "Friday") Persona::set_character(Persona::Character::FRIDAY);
-    else if (character == "Partner") Persona::set_character(Persona::Character::PARTNER);
-    else if (character == "Cool Friend") Persona::set_character(Persona::Character::COOL_FRIEND);
     
     log_message(("Persona Character set to: " + character).c_str());
 }
@@ -64,8 +60,8 @@ GtkWidget* create_settings_view(StoreApp* app_data) {
     GtkWidget* char_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_pack_start(GTK_BOX(char_box), gtk_label_new("Character:"), FALSE, FALSE, 0);
     GtkWidget* char_combo = gtk_combo_box_text_new();
-    const char* chars[] = {"Ace", "Light", "Jarvis", "Friday", "Partner", "Cool Friend"};
-    for (int i = 0; i < 6; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(char_combo), chars[i]);
+    const char* chars[] = {"Ace", "Light"};
+    for (int i = 0; i < 2; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(char_combo), chars[i]);
     gtk_combo_box_set_active(GTK_COMBO_BOX(char_combo), 0);
     gtk_box_pack_start(GTK_BOX(char_box), char_combo, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), char_box, FALSE, FALSE, 0);

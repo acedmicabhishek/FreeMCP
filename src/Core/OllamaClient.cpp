@@ -37,8 +37,8 @@ bool OllamaClient::remove_model(std::string_view name) {
 bool OllamaClient::ensure_service_active() {
     if (system("systemctl is-active --quiet ollama") == 0) return true;
     log_message("Ollama service inactive. Requesting start...");
-    if (system("pkexec systemctl start ollama") != 0) {
-        log_message("ERROR: User denied elevation or pkexec failed.");
+    if (system("systemctl start ollama") != 0) {
+        log_message("ERROR: Failed to start Ollama service (Permission denied or service missing).");
         return false;
     }
     log_message("Waiting for Ollama API to respond...");
