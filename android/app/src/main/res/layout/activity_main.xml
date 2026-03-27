@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
-                android:hint="192.168.x.x"
+                android:hint="IP or URL (e.g. host:port)"
                 android:inputType="textNoSuggestions"
                 android:paddingHorizontal="16dp"
                 android:textColor="#FFFFFF"

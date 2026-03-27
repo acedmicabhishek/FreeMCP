@@ -34,7 +34,7 @@ std::string ChatEngine::chat(std::string_view model, std::string_view prompt) {
     fputs(payload.c_str(), fp);
     fclose(fp);
 
-    std::string cmd = "curl -s -X POST http:
+    std::string cmd = "curl -s -X POST http://localhost:11434/api/generate -d @" + tmp_file + " | jq -r .response";
     log_message(("Chat sent to " + active_model).c_str());
     
     std::string raw_response;
@@ -70,7 +70,7 @@ std::string ChatEngine::chat_execute(std::string_view model, std::string_view pr
     fputs(payload.c_str(), fp);
     fclose(fp);
 
-    std::string cmd = "curl -s -X POST http:
+    std::string cmd = "curl -s -X POST http://localhost:11434/api/generate -d @" + tmp_file + " | jq -r .response";
     log_message(("EXEC AI query sent to " + active_model).c_str());
 
     std::string raw_response;
@@ -122,7 +122,7 @@ std::string ChatEngine::chat_auto(std::string_view model, std::string_view promp
 
         std::string raw_response;
         std::array<char, 512> buffer;
-        std::string curl_cmd = "curl -s -X POST http:
+        std::string curl_cmd = "curl -s -X POST http://127.0.0.1:11434/api/generate -H 'Content-Type: application/json' -d @" + tmp_file + " | jq -r '.response'";
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(curl_cmd.c_str(), "r"), pclose);
         if (pipe) {
             while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) raw_response += buffer.data();
